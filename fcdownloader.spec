@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['lfcedownloader.py'],
+    ['fcdownloader.py'],
     pathex=[],
     binaries=[],
     datas=[('Binaries/', '.')],
@@ -28,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='lfce_downloader',
+    name='fc_downloader',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
