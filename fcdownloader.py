@@ -3,98 +3,153 @@ Master module. Runs basic checks and then offloads all
 of the real work to functions defined in other files.
 """
 import os
-import traceback
-import ctypes
-from platform import system
-from shutil import which
-from subprocess import run
 import sys
-from sys import argv, exit, stdin
-#from rich import print
-from tkinter import messagebox
-from gettext import gettext as _
-from PyQt5 import QtCore, QtGui, QtWidgets
-import gettext
-#import gui
+
+from PySide6.QtWidgets import QLabel
+
 import functions
+from tkinter import messagebox as mb
 
-# Disable QuickEdit so the process doesn't pause when clicked
-if system() == 'Windows':
-    kernel32 = ctypes.windll.kernel32
-    kernel32.SetConsoleMode(kernel32.GetStdHandle(-10), (0x4|0x80|0x20|0x2|0x10|0x1|0x00|0x100))
+# -*- coding: utf-8 -*-
 
-#if system() == 'Linux':
-    #print(_("[bold red]Due to multiple problems when running FCDownloader Qt5 Version on Linux.[/bold red]"))
-    #print(_("[bold red]Linux support will be cut off.[/bold red]"))
+################################################################################
+## Form generated from reading UI file 'untitledAoZjWg.ui'
+##
+## Created by: Qt User Interface Compiler version 5.15.2
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
+
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 
 
-def sanity_check():
-    """
-    This is mainly for Linux, because it's easy to launch it by double-clicking it, which would
-    run it in the background and not show any output. PyInstaller has no way to force a terminal
-    open for this on Linux. We could implement something similar to what we do to force using WT,
-    but it's not a priority right now since Linux users can figure out how to use the terminal.
-    """
-    if not stdin or not stdin.isatty():
-        print(_("Looks like we're running in the background. We don't want that, so we're exiting."))
-        exit(1)
+class Ui_MainWindow(object):
+    #statusLabel: QLabel
 
-if sys.stdout.encoding == 'ascii':
-    sys.stdout.reconfigure(encoding='utf-8')
-if sys.stderr.encoding == 'ascii':
-    sys.stderr.reconfigure(encoding='utf-8')
+    def setupUi(self, MainWindow):
+        if not MainWindow.objectName():
+            MainWindow.setObjectName(u"MainWindow")
+        MainWindow.resize(686, 457)
+        self.actionDownload = QAction(MainWindow)
+        self.actionDownload.setObjectName(u"actionDownload")
+        self.actionDownload.triggered.connect(self.run_clone)
+        self.actionUpdate = QAction(MainWindow)
+        self.actionUpdate.setObjectName(u"actionUpdate")
+        self.actionUpdate.triggered.connect(self.run_pull)
+        self.actionSettings = QAction(MainWindow)
+        self.actionSettings.setObjectName(u"actionSettings")
+        #self.actionSettings.triggered.connect(self.tabWidget.setCurrentIndex(1))
+        self.actionExit = QAction(MainWindow)
+        self.actionExit.setObjectName(u"actionExit")
+        #self.actionExit.triggered.connect(sys.exit())
+        self.centralwidget = QWidget(MainWindow)
+        self.centralwidget.setObjectName(u"centralwidget")
+        self.label = QLabel(self.centralwidget)
+        self.label.setObjectName(u"label")
+        self.label.setGeometry(QRect(200, 0, 291, 31))
+        self.tabWidget = QTabWidget(self.centralwidget)
+        self.tabWidget.setObjectName(u"tabWidget")
+        self.tabWidget.setGeometry(QRect(0, 10, 691, 401))
+        self.tab = QWidget()
+        self.tab.setObjectName(u"tab")
+        self.label_2 = QLabel(self.tab)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setGeometry(QRect(110, 40, 111, 16))
+        self.installButton = QPushButton(self.tab)
+        self.installButton.setObjectName(u"installButton")
+        self.installButton.setGeometry(QRect(120, 60, 61, 23))
+        self.installButton.clicked.connect(self.run_clone)
+        #self.installButton.clicked.connect(functions.install)
+        self.updateButton = QPushButton(self.tab)
+        self.updateButton.setObjectName(u"updateButton")
+        self.updateButton.setGeometry(QRect(120, 90, 61, 23))
+        self.updateButton.clicked.connect(self.run_pull)
+        #self.updateButton.clicked.connect(functions.update)
+        self.tabWidget.addTab(self.tab, "")
+        self.tab_2 = QWidget()
+        self.tab_2.setObjectName(u"tab_2")
+        self.settingsLabel = QLabel(self.tab_2)
+        self.settingsLabel.setObjectName(u"settingsLabel")
+        self.settingsLabel.setGeometry(QRect(10, 0, 331, 31))
+        """self.radioButton = QRadioButton(self.tab_2)
+        self.radioButton.setObjectName(u"radioButton")
+        self.radioButton.setGeometry(QRect(10, 60, 82, 17))
+        self.label_3 = QLabel(self.tab_2)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setGeometry(QRect(10, 40, 51, 16))"""
+        self.tabWidget.addTab(self.tab_2, "")
+        #global statusLabel
+        #self.statusLabel = QLabel(self.centralwidget)
+        #self.statusLabel.setObjectName(u"statusLabel")
+        #self.statusLabel.setGeometry(QRect(0, 400, 671, 41))
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QMenuBar(MainWindow)
+        self.menubar.setObjectName(u"menubar")
+        self.menubar.setGeometry(QRect(0, 0, 686, 21))
+        self.menuFile = QMenu(self.menubar)
+        self.menuFile.setObjectName(u"menuFile")
+        MainWindow.setMenuBar(self.menubar)
 
-class Ui_Dialog(object):
-    def setupUi(self, mainmenuDialog):
-        mainmenuDialog.setObjectName("mainmenuDialog")
-        mainmenuDialog.resize(400, 317)
-        self.frame = QtWidgets.QFrame(mainmenuDialog)
-        self.frame.setGeometry(QtCore.QRect(-1, -1, 401, 271))
-        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame.setObjectName("frame")
-        self.install_updateButton_1 = QtWidgets.QPushButton(self.frame)
-        self.install_updateButton_1.setGeometry(QtCore.QRect(150, 170, 75, 23))
-        self.install_updateButton_1.setObjectName("install_updateButton_1")
-        self.mainmenuLabel_0 = QtWidgets.QLabel(self.frame)
-        self.mainmenuLabel_0.setGeometry(QtCore.QRect(120, 60, 141, 21))
-        self.mainmenuLabel_0.setObjectName("mainmenuLabel_0")
-        self.install_updateButton_0 = QtWidgets.QPushButton(self.frame)
-        self.install_updateButton_0.setGeometry(QtCore.QRect(150, 140, 75, 23))
-        self.install_updateButton_0.setObjectName("install_updateButton_0")
-        self.frame_2 = QtWidgets.QFrame(mainmenuDialog)
-        self.frame_2.setGeometry(QtCore.QRect(10, 270, 381, 41))
-        self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_2.setObjectName("frame_2")
-        self.settingsButton = QtWidgets.QPushButton(self.frame_2)
-        self.settingsButton.setGeometry(QtCore.QRect(0, 10, 21, 23))
-        self.settingsButton.setObjectName("settingsButton")
-        self.helpButton = QtWidgets.QPushButton(self.frame_2)
-        self.helpButton.setGeometry(QtCore.QRect(360, 10, 21, 23))
-        self.helpButton.setObjectName("helpButton")
+        self.menubar.addAction(self.menuFile.menuAction())
+        self.menuFile.addAction(self.actionDownload)
+        self.menuFile.addAction(self.actionUpdate)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionSettings)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionExit)
 
-        self.retranslateUi(mainmenuDialog)
-        QtCore.QMetaObject.connectSlotsByName(mainmenuDialog)
+        self.retranslateUi(MainWindow)
 
-        self.install_updateButton_0.clicked.connect(functions.install)
-        self.install_updateButton_1.clicked.connect(functions.update)
+        self.tabWidget.setCurrentIndex(2)
 
-    def retranslateUi(self, mainmenuDialog):
-        _translate = QtCore.QCoreApplication.translate
-        mainmenuDialog.setWindowTitle(_translate("mainmenuDialog", "FCDownloader"))
-        self.install_updateButton_1.setText(_translate("mainmenuDialog", "Update"))
-        self.mainmenuLabel_0.setText(_translate("mainmenuDialog", "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">FCDownloader</span></p></body></html>"))
-        self.install_updateButton_0.setText(_translate("mainmenuDialog", "Install"))
-        self.settingsButton.setText(_translate("mainmenuDialog", "⚙︎"))
-        self.helpButton.setText(_translate("mainmenuDialog", "?"))
+
+        QMetaObject.connectSlotsByName(MainWindow)
+    # setupUi
+
+    def retranslateUi(self, MainWindow):
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"FCDownloader", None))
+        self.actionDownload.setText(QCoreApplication.translate("MainWindow", u"Download", None))
+        self.actionUpdate.setText(QCoreApplication.translate("MainWindow", u"Update", None))
+        self.actionSettings.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
+        self.actionExit.setText(QCoreApplication.translate("MainWindow", u"Exit", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:16pt; font-weight:600;\">Welcome to FCDownloader</span></p></body></html>", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">Install/Update FC</span></p><p><br/></p></body></html>", None))
+        self.installButton.setText(QCoreApplication.translate("MainWindow", u"Install", None))
+        self.updateButton.setText(QCoreApplication.translate("MainWindow", u"Update", None))
+        #self.statusLabel.setText(QCoreApplication.translate("MainWindow",
+        #                                                    u"<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">Ready!</span></p></body></html>",
+        #                                                    None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Menu", None))
+        self.settingsLabel.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">Settings (coming soon)</span></p></body></html>", None))
+        #self.radioButton.setText(QCoreApplication.translate("MainWindow", u"RadioButton", None))
+        #self.label_3.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:10pt; font-weight:600;\">Themes</span></p></body></html>", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Settings", None))
+        self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
+    # retranslateUi
+
+    def run_clone(self):
+        #self.statusLabel.setText("<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">Installing FC...</span></p></body></html>")
+        functions.install()
+        #self.statusLabel.setText("<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">Installation complete!</span></p></body></html>")
+        mb.showinfo("FCDownloader", "The installation has been completed.\nIf you don't see the mod in your library, restart Steam\nMake sure you have TF2 and Source SDK Base 2013 Multiplayer installed!")
+        #self.statusLabel.setText("<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">Ready!</span></p></body></html>")
+
+    def run_pull(self):
+        #self.statusLabel.setText("<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">Updating FC...</span></p></body></html>", None)
+        functions.update()
+        #self.statusLabel.setText("<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">Update complete!</span></p></body></html>",None)
+        mb.showinfo("FCDownloader", "Fortress Connected is now on the latest branch, you can play now!")
+        #self.statusLabel.setText("<html><head/><body><p><span style=\" font-size:9pt; font-weight:600;\">Ready!</span></p></body></html>")
+
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_Dialog()
- 
+    app = QApplication(sys.argv)
+
+    MainWindow = QMainWindow()
+    ui = Ui_MainWindow()
+
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

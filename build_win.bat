@@ -1,1 +1,2 @@
 pyinstaller fcdownloader.spec
+pyinstaller fcdownloader_debug.spec

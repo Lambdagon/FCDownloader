@@ -8,16 +8,16 @@ from sys import exit
 from time import sleep
 from rich import print
 from gettext import gettext as _
+from tkinter import messagebox as mb
 import unicodedata
 import vars
 
-def message(msg, delay = 0):
+def message(title, msg, delay = 0):
     """
     Show a message to user.
     Delay stops program for specified amount of seconds.
     """
-    print("[bold yellow]" + msg)
-    sleep(delay)
+    mb.showinfo(title=title, message=msg)
 
 def message_yes_no(msg, default = None):
     """
@@ -37,23 +37,15 @@ def message_yes_no(msg, default = None):
     valid[localno] = False
     valid[localno[0]] = False
 
-    prompt = _(" {y/n}")
-    if default == "y":
-        prompt = _(" {Y/n}")
-    elif default == "n":
-        prompt = _(" {y/N}")
-    msg += prompt
-
     while True:
-        print(msg)
+        mb.askyesno("FCDownloader", message=msg)
         choice = input().lower()
         if default is not None and choice == "":
             return valid[default]
         elif choice in valid:
             return valid[choice]
         else:
-            print(_("[bold blue]Please respond with 'yes' or 'no' (or 'y' or 'n').[/bold blue]"))
-
+            mb.showwarning("FCDownloader", "Please press YES or NO.")
 
 def message_input(msg):
     """

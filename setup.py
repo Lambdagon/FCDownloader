@@ -12,6 +12,8 @@ from platform import system
 from shutil import which
 from rich import print
 from gettext import gettext as _
+import tkinter as tk
+from tkinter import messagebox
 import gui
 import vars
 if system() == 'Windows':
@@ -76,8 +78,7 @@ def setup_path(manual_path):
 
     smodsfound = isinstance(vars.INSTALL_PATH, str)
     if smodsfound is True and manual_path is not True:
-        gui.message(_("Sourcemods folder was automatically found at: %s") % vars.INSTALL_PATH)
-        if gui.message_yes_no(_("It's the recommended installation location. Would you like to install Fortress Connected there?")):
+        if messagebox.askyesno("FCDownloader", "Sourcemods folder was found at:\n%s\n------------------------------------------------------------------------------\nIt's the recommended installation location.\nWould you like to install/update Fortress Connected there?" % vars.INSTALL_PATH):
             confirm = True
         else:
             setup_path(True)
