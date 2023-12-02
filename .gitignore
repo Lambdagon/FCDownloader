@@ -5,3 +5,14 @@ __pycache__
 .temp
 *.mo
 *.po~
+
+# jetbrains
+.idea
+venv
+
+# vs
+.vs
+
+# vs code
+*.code-workspace
+.vscode
