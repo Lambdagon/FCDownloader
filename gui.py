@@ -19,7 +19,7 @@ def message(title, msg, delay = 0):
     """
     mb.showinfo(title=title, message=msg)
 
-def message_yes_no(msg, default = None):
+def message_yes_no(title, msg, default = None):
     """
     Show a message to user and get yes/no answer.
     """
@@ -38,7 +38,7 @@ def message_yes_no(msg, default = None):
     valid[localno[0]] = False
 
     while True:
-        mb.askyesno("FCDownloader", message=msg)
+        mb.askyesno(title=title, message=msg)
         choice = input().lower()
         if default is not None and choice == "":
             return valid[default]

@@ -84,8 +84,8 @@ def setup_path(manual_path):
             setup_path(True)
             return
     else:
-        gui.message(_("WARNING: Steam's sourcemods folder has not been found, or you chose not to use it. Make sure Steam is fully installed or its registry paths fixed."))
-        if gui.message_yes_no(_("Would you like to extract in %s? You must move it to your sourcemods manually.") % getcwd()):
+        gui.message("FCDownloader", "WARNING: Steam's sourcemods folder has not been found, or you chose not to use it. Make sure Steam is fully installed or its registry paths fixed.")
+        if gui.message_yes_no("FCDownloader", "Would you like to extract in %s? You must move it to your sourcemods manually." % getcwd()):
             vars.INSTALL_PATH = getcwd()
             confirm = True
         else:
